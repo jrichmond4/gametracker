@@ -1,0 +1,20 @@
+{
+  "rules": {
+    ".read": true,
+    "comments": {
+      "$commentID": {
+        ".write": "auth != null && auth.provider === 'twitter' && !data.exists()",
+        ".validate": "newData.hasChildren(['userid', 'username', 'body'])",
+        "body": {
+          ".validate":"newData.isString()"
+        },
+        "userid": {
+          ".validate":"newData.val() == auth.id"
+        },
+        "username": {
+          ".validate":"newData.val() == auth.username"
+        }
+      }
+    }
+  }
+}
