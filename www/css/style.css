@@ -293,7 +293,7 @@ p.larger {
   font-style: normal;
 }
 
-#loginBox {
+#loginRegisterBox, #loginBox, #registerBox {
 	padding: 10px 20px;
 }
 
@@ -320,4 +320,19 @@ html, body {
 #map-canvas {
 	height: 100%;	
 }
+
+.center-button{
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+#mobile-header {
+	display: none;
+}
+@media only screen and (max-width: 767px){
+	#mobile-header {
+		display: block;
+	}
+}
+
 

@@ -16,6 +16,7 @@
     <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
     <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase-simple-login.js'></script>
     <script type='text/javascript' src='js/app.js'></script>
+    <script type='text/javascript' src='js/jquery.validate.min.js'></script>
     
     <!-- Map Stuff -->
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
@@ -71,19 +72,17 @@
 	for more details -jm */
 	function onDeviceReady()
 	{
-		//app.init();
 		if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
 			var reachability = new Reachability();
 			if(reachability.IsNotConnected()){
 				navigator.notification.alert('No internet connection available',null, '', 'OK');
 			}
-			else{
-				var map = new GoogleMap();
-				map.initialize();
+			else {
+				app.init();
 			}
-		} else {
-			var map = new GoogleMap();
-			map.initialize();
+		}
+		else {
+			app.init();
 		}
     }
     
@@ -94,15 +93,35 @@
         <div data-role="header" data-position="fixed">
         	<a href="index.html" data-role="button" data-icon="home" data-iconpos="left">Home</a>
             <h1>GameTracker</h1>
-            <a href="index.html" data-role="button" data-icon="grid" data-iconpos="right">Menu</a>
+            <a href="#right-menu" id="menuBtn" data-role="button" data-icon="grid" data-iconpos="right">Menu</a>
         </div>
+        
         <div data-role="content">	
             <div id="map-canvas"></div>
         </div>
+        
         <div data-role="footer" data-position="fixed">
             <h4>Page Footer</h4>
         </div>
+        
+        <div data-role="panel" id="right-menu" data-position="right" data-display="overlay">
+            <ul>
+                <li><a href="#">List 1</a></li>
+                <li class="active"><a href="#">List 2</a></li>
+                <li><a href="#">List 3</a></li>
+            </ul>
+        </div>
+        
+        <div data-role="popup" id="loginRegisterBox">
+        	<a id="loginBtn" data-role="button">Login</a>
+            <p style="text-align:center;">OR</p>
+          <a id="registerBtn" data-role="button">Register</a>
+        </div>
+        
         <div data-role="popup" id="loginBox">
+        	<div data-role="header">
+                <h1>Login</h1>
+            </div>
             <div data-role="fieldcontain">
               <label for="email">Email:</label>
               <input type="text" name="email" id="email" value=""  />
@@ -111,7 +130,34 @@
               <label for="passwordinput">Password:</label>
               <input type="password" name="username" id="password" value=""  />
             </div>
-            <button id="loginBtn">Login</button>
+            <div data-role="fieldcontain">
+              <fieldset data-role="controlgroup" data-type="horizontal">
+                <input type="checkbox" name="rememberme" id="rememberme" value="" />
+                <label for="rememberme">Remember Me?</label>
+              </fieldset>
+            </div>
+			<button id="goBtn">Go!</button>
+        </div>
+        
+        <div data-role="popup" id="registerBox">
+        	<div data-role="header">
+                <h1>Register</h1>
+            </div>
+            <form class="cmxform" id="registerForm">
+                <div data-role="fieldcontain">
+                  <label for="register_email">Email:</label>
+                  <input type="text" name="register_email" id="register_email" value=""  required/>
+                </div>
+                <div data-role="fieldcontain">
+                  <label for="register_password">Password:</label>
+                  <input type="password" name="register_password" id="register_password" value=""  required/>
+                </div>
+                <div data-role="fieldcontain">
+                  <label for="register_validate_password">Validate Password:</label>
+                  <input type="password" name="register_validate_password" id="register_validate_password" value=""  required/>
+                </div>
+                <button id="signUpBtn" style="display:none;">Sign Up!</button>
+            </form>
         </div>
     </div>
     </body>
