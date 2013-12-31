@@ -71,7 +71,7 @@ var app = (function () {
 		});
 		$("#goBtn").on("click", function () {
 			auth.login('password', {
-				email : $("#email").val(),
+				email : $("#email").val().trim(),
 				password : $("#password").val(),
 				rememberMe : $("#rememberme").prop('checked')
 			});
@@ -114,7 +114,7 @@ var app = (function () {
 				}
 			},
 			submitHandler: function(form) {
-				var email = $("#register_email").val();
+				var email = $("#register_email").val().trim();
 				var password = $("#register_password").val();
 				auth.createUser(email, password, function(error,  user) {
 					if (!error) {
