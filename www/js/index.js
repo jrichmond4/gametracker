@@ -27,9 +27,11 @@ var index = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
-		  document.addEventListener("deviceready", onDeviceReady, false);
+		  document.addEventListener("deviceready", this.onDeviceReady, false);
 		} else {
-		  this.onDeviceReady();
+			$(document).ready(function(e) {
+                index.onDeviceReady();
+            });		  
 		}
 	},
     // deviceready Event Handler
@@ -38,6 +40,7 @@ var index = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         //index.receivedEvent('deviceready');
+		console.log('ready');		
 		app.init();
     },
     // Update DOM on a Received Event
