@@ -304,17 +304,24 @@ html, body {
 
 /*make the page element 100% height*/
 #map-page {
-    height : 100%;
 }
 
 /*set the content to be full-width and height except it doesn't overlap the header or footer*/
 #map-page .ui-content {
     position : absolute;
-    top      : 40px;
+    top      : 42px;
     right    : 0;
-    bottom   : 30px;
+    bottom   : 42px;
     left     : 0;
 	padding  : 0;
+}
+
+#map-page .ui-header {
+    height: 40px;
+}
+
+#map-page .ui-footer {
+    height: 40px;
 }
 
 #map-canvas {
@@ -334,5 +341,3 @@ html, body {
 		display: block;
 	}
 }
-
-

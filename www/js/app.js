@@ -135,7 +135,7 @@ var app = (function () {
 			$("#loginRegisterBox").popup("close");
 			$("#registerBox").popup("open");
 		});
-	}
+	};
 
 	return {
 		init : init,
