@@ -24,17 +24,21 @@ $(function() {
   var Zone = Parse.Object.extend("Zone", {
     // Default attributes for the todo.
     defaults: {
-      bounds: new Array(),
-	  name: "Zone"
+      //bounds: new Array(),
+	  name: "Zone",
+	  user: Parse.User.current()
     },
 
     // Ensure that each todo created has `content`.
     initialize: function() {
-      if (!this.get("bounds")) {
-        this.set({"bounds": this.defaults.bounds});
-      }
+      //if (!this.get("bounds")) {
+        //this.set({"bounds": this.defaults.bounds});
+      //}
 	  if (!this.get("name")) {
         this.set({"name": this.defaults.name});
+      }
+	  if (!this.get("user")) {
+        this.set({"user": this.defaults.user});
       }
     },
 	
@@ -55,6 +59,11 @@ $(function() {
 
     // Reference to this collection's model.
     model: Zone,
+
+    // Todos are sorted by their original insertion order.
+    comparator: function(zone) {
+      return zone.get('name');
+    }
 
   });
 
@@ -89,25 +98,10 @@ $(function() {
     },
 
     // Re-render the contents of the todo item.
-    render: function(map) {
-      //$(this.el).html(this.template(this.model.toJSON()));
-      //this.input = this.$('.edit');
-	  console.log(this.model.get("bounds"));
-	  var googleBounds = [];
-	  this.model.get("bounds").forEach(function(bound){
-		 var myLatLng = new google.maps.LatLng(bound.d, bound.e);
-		 googleBounds.push(myLatLng);
-	  });
-	  var polygon = new google.maps.Polygon({
-				strokeColor: '#FF0000',
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: '#FF0000',
-				fillOpacity: 0.1,
-				map: map,
-				paths: googleBounds
-		});
-      	return this;
+    render: function() {
+      $(this.el).html(this.template(this.model.toJSON()));
+      this.input = this.$('.edit');
+      return this;
     },
 
     // Toggle the `"done"` state of the model.
@@ -146,8 +140,7 @@ $(function() {
   var Map = Parse.Object.extend("Map", {
     // Default attributes for the todo.
     defaults: {
-		googleMap: null,
-		center: new google.maps.LatLng(38.389437, -96.995287),
+		map: "",
 		zone: new Zone()
     },
 
@@ -158,17 +151,17 @@ $(function() {
 		}	
 		var mapOptions = {
 			 zoom: 16,
-			 center: this.get("center"),
+			 center: new google.maps.LatLng(38.389437, -96.995287),
 			 mapTypeId: google.maps.MapTypeId.HYBRID,
 			 disableDoubleClickZoom: true
 		 };
 			 
-        this.googleMap = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        this.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
     },
 	
 	addListener: function() {
 		var that = this;
-		google.maps.event.addListener(this.googleMap, 'dblclick', function(event) {
+		google.maps.event.addListener(this.map, 'dblclick', function(event) {
 			that.placeMarker(event.latLng);
 		});
 	},
@@ -176,7 +169,7 @@ $(function() {
 	placeMarker: function(location) {
 		var marker = new google.maps.Marker({
 			position: location,
-			map: this.googleMap
+			map: this.map
 		});
 		
 		this.get("zone").addMarker(location);
@@ -184,6 +177,28 @@ $(function() {
 	  	//map.setCenter(location);
 	},
 	
+	finishArea: function() {
+		/*
+		var polygon = new google.maps.Polygon({
+				strokeColor: '#FF0000',
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: '#FF0000',
+				fillOpacity: 0.1,
+				map: this.map,
+				paths: this.get("zone").get("bounds")
+		});
+		*/
+		$("#saveArea").popup("open");	
+	},
+	
+	saveArea: function() {		
+		var name = $("#area_name").val();
+		this.get("zone").save({name: name});
+		
+		$("#saveArea").popup("close");
+	},
+
     // Toggle the `done` state of this todo item.
     toggle: function() {
       //this.save({done: !this.get("done")});
@@ -200,47 +215,22 @@ $(function() {
     el: "#map-page",
     
     initialize: function() {	
-		var self = this;
-		 _.bindAll(this, 'addOne', 'addAll', 'addSome', 'render', 'setCenter');
-		 
-		 this.map = new Map;
-		 if (navigator.geolocation) {
-			 navigator.geolocation.getCurrentPosition(this.setCenter);
-		 }
+      	this.map = new Map;
 		
 		// Setup the query for the collection to look for todos from the current user
 		this.zones = new ZoneList;
       	this.zones.query = new Parse.Query(Zone);
-      	this.zones.query.equalTo("user", Parse.User.current());
+      	//this.zones.query.equalTo("user", Parse.User.current());
         
       	this.zones.bind('add',     this.addOne);
       	this.zones.bind('reset',   this.addAll);
       	this.zones.bind('all',     this.render);
 
       	// Fetch all the todo items for this user
-		/*
-      	this.zones.fetch({
-			success: function() {
-				if(self.zones.length > 0) {
-					this.map = new Map({center:new google.maps.LatLng(self.zones.models[0].get("bounds").e, self.zones.models[0].get("bounds").d)});
-				}
-				else {
-					this.map = new Map;
-				}		
-			},
-			error: function() {
-				console.log("error fetch");		
-			}
-		});
-		*/
-		this.zones.fetch();		
-		
-		state.on("change", this.filter, this);
+      	this.zones.fetch();
+		console.log(this.zones);
+      	state.on("change", this.filter, this);
     },
-	
-	setCenter: function(position) {
-		this.map.googleMap.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-	},
 	
 	addArea: function() {
 		var that = this;
@@ -252,27 +242,11 @@ $(function() {
 	},
 	
 	areaDone: function() {
-		var polygon = new google.maps.Polygon({
-				strokeColor: '#FF0000',
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: '#FF0000',
-				fillOpacity: 0.1,
-				map: this.map.googleMap,
-				paths: this.map.get("zone").get("bounds")
-		});
-		$("#saveArea").popup("open");	
+		this.map.finishArea();
 	},
 	
-	saveArea: function() {		
-		this.zones.create({
-			name: 	 $("#area_name").val(),
-			bounds:	 this.map.get("zone").get("bounds"),
-			user:    Parse.User.current(),
-			ACL:     new Parse.ACL(Parse.User.current())
-      	});
-		
-	  	$("#saveArea").popup("close");
+	saveArea: function() {
+		this.map.saveArea();
 	},
 	
 	filter: function() {
@@ -288,7 +262,7 @@ $(function() {
     addOne: function(zone) {
       var view = new ZoneView({model: zone});
       //this.$("#todo-list").append(view.render().el);
-	  view.render(this.map.googleMap);
+	  view.render().el
     },
 
     // Add all items in the Todos collection at once.
@@ -306,7 +280,7 @@ $(function() {
 
     render: function() {
       //this.$el.html(_.template($("#login-template").html()));
-      //this.delegateEvents();
+      this.delegateEvents();
     }
   });
   

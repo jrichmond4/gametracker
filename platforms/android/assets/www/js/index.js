@@ -40,8 +40,8 @@ var index = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         //index.receivedEvent('deviceready');
-		console.log('ready');		
-		app.init();
+		console.log('ready');	
+		//myApp.initialize();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {

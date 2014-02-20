@@ -28,8 +28,25 @@
     	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css" />
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.js"></script>
-        <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
-        <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase-simple-login.js'></script>
+        
+        <script type="text/javascript">
+		  $(document).bind("mobileinit", function(){
+			  $.mobile.page.prototype.options.addBackBtn= false;
+			  $.mobile.ajaxEnabled = false;
+			  $.mobile.linkBindingEnabled = false;
+			  $.mobile.hashListeningEnabled = false;
+			  $.mobile.pushStateEnabled = false;
+	
+			  $(document).on('pagehide', function (event, ui) {
+				$(".ui-page").not(".ui-page-active").remove()
+			  });
+		  });
+		</script>
+		<script src="js/underscore-1.1.6.js"></script>
+    	<script src="js/parse-1.2.13.min.js"></script>
+	
+		<!-- App specific scripts -->
+		<script src="app.js"></script>
         
         <script type='text/javascript' src='js/jquery.validate.min.js'></script>
         
@@ -37,6 +54,8 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
         <script type="text/javascript" src="js/googlemap.js"></script>
         <script type="text/javascript" src="js/reachability.js"></script>
+        
+        <script type="text/javascript" src="js/globals.js"></script>
     </head>
     <body>
     	<div data-role="page" id="map-page">
@@ -57,45 +76,49 @@
         <div data-role="panel" id="right-menu" data-position="right" data-display="overlay">
             <ul>
                 <li><a href="#" id="addArea">Add Hunting Area</a></li>
-                <li><a href="#" id="areaDone">Area Done</a></li>
+                <li><a href="#" id="areaDone">Area Done</a></li>                
             </ul>
+            <a href="#" id="logout">Logout</a>
         </div>
         
-        <div data-role="popup" id="loginRegisterBox">
+        <div data-role="popup" class="popup" id="loginRegisterBox">
         	<a id="loginBtn" data-role="button">Login</a>
             <p style="text-align:center;">OR</p>
           	<a id="registerBtn" data-role="button">Register</a>
         </div>
         
-        <div data-role="popup" id="loginBox">
+        
+        <div data-role="popup" class="popup" id="loginBox">
         	<div data-role="header">
                 <h1>Login</h1>
             </div>
             <div data-role="fieldcontain">
-              <label for="email">Email:</label>
-              <input type="text" name="email" id="email" value=""  />
+              <label for="username">Username:</label>
+              <input type="text" name="username" id="username" value=""  />
             </div>
             <div data-role="fieldcontain">
               <label for="passwordinput">Password:</label>
-              <input type="password" name="username" id="password" value=""  />
+              <input type="password" name="password" id="password" value=""  />
             </div>
+            <!--
             <div data-role="fieldcontain">
               <fieldset data-role="controlgroup" data-type="horizontal">
                 <input type="checkbox" name="rememberme" id="rememberme" value="" />
                 <label for="rememberme">Remember Me?</label>
               </fieldset>
             </div>
+            -->
 			<button id="goBtn">Go!</button>
         </div>
         
-        <div data-role="popup" id="registerBox">
+        <div data-role="popup" class="popup" id="registerBox">
         	<div data-role="header">
                 <h1>Register</h1>
             </div>
             <form class="cmxform" id="registerForm">
                 <div data-role="fieldcontain">
-                  <label for="register_email">Email:</label>
-                  <input type="text" name="register_email" id="register_email" value=""  required/>
+                  <label for="register_username">Username:</label>
+                  <input type="text" name="register_username" id="register_username" value=""  required/>
                 </div>
                 <div data-role="fieldcontain">
                   <label for="register_password">Password:</label>
@@ -107,6 +130,23 @@
                 </div>
                 <button id="signUpBtn" style="display:none;">Sign Up!</button>
             </form>
+        </div>
+        
+        <div data-role="popup" class="popup" id="saveArea">
+        	<div data-role="header">
+                <h1>Save Hunting Area</h1>
+            </div>
+            <div data-role="fieldcontain">
+              <label for="area_name">Area Name:</label>
+              <input type="text" name="area_name" id="area_name" value=""  required/>
+            </div>
+            <div data-role="fieldcontain">
+              <fieldset data-role="controlgroup" data-type="horizontal">
+                <input type="checkbox" name="default_area" id="default_area" value="" />
+                <label for="default_area">Set Default?</label>
+              </fieldset>
+            </div>
+            <button id="saveAreaBtn">Save Area</button>
         </div>
     </div>
     

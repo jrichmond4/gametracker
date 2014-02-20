@@ -1,9 +1,27 @@
 function GoogleMap(){
-    
+    var map;
+	
     this.initialize = function(){
-        var map = showMap();
+        map = showMap();
         //addMarkersToMap(map);
-    }    
+		
+		//var areas = myApp.getList('map');
+    } 
+	
+	var showMap = function(){
+        var mapOptions = {
+			     zoom: 16,
+			     center: new google.maps.LatLng(38.389437, -96.995287),
+			     mapTypeId: google.maps.MapTypeId.HYBRID,
+				 disableDoubleClickZoom: true
+			 }
+			 
+        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+		//Set to terrain view
+        //map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+        return map;
+    }
+	
     
     var addMarkersToMap = function(map){
         var mapBounds = new google.maps.LatLngBounds();
@@ -26,18 +44,5 @@ function GoogleMap(){
         mapBounds.extend(latitudeAndLongitudeTwo);
         
         map.fitBounds(mapBounds);
-    }
-	
-    var showMap = function(){
-        var mapOptions = {
-			     zoom: 16,
-			     center: new google.maps.LatLng(38.389437, -96.995287),
-			     mapTypeId: google.maps.MapTypeId.HYBRID
-			 }
-			 
-        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-		//Set to terrain view
-        //map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-        return map;
     }
 }

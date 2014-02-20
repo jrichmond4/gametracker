@@ -216,6 +216,14 @@ p.larger {
   margin: 0px;
 }
 
+#right-menu {
+	
+}
+	#logout {
+		position: absolute;
+		bottom: 10px;
+	}
+
 #footer {
   width: 100%;
   margin: 130px auto 20px;
@@ -293,7 +301,7 @@ p.larger {
   font-style: normal;
 }
 
-#loginRegisterBox, #loginBox, #registerBox {
+.popup {
 	padding: 10px 20px;
 }
 

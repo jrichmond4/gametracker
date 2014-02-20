@@ -1,52 +1,19 @@
 function GoogleMap(){
     var map;
-	var bounds = [];
 	
     this.initialize = function(){
         map = showMap();
         //addMarkersToMap(map);
-	  
-	  $("#addArea").click(function(e){
-		  bounds = new Array();
-		  
-		  google.maps.event.addListener(map, 'dblclick', function(event) {
-			placeMarker(event.latLng);
-		  });
-		});
 		
-		$("#areaDone").click(function(e){
-			var areaBounds = new google.maps.LatLngBounds();
-			for (var i = 0; i < bounds.length; i++) {
-				areaBounds.extend(bounds[i]);
-			  }
-			var polygon = new google.maps.Polygon({
-				strokeColor: '#FF0000',
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: '#FF0000',
-				fillOpacity: 0.35,
-				map: map,
-				paths: bounds
-			  });
-		});
+		//var areas = myApp.getList('map');
     } 
-	
-	function placeMarker(location) {
-	  var marker = new google.maps.Marker({
-		  position: location,
-		  map: map
-	  });
-	  
-	  bounds.push(location);
-		
-	  //map.setCenter(location);
-	}   
 	
 	var showMap = function(){
         var mapOptions = {
 			     zoom: 16,
 			     center: new google.maps.LatLng(38.389437, -96.995287),
-			     mapTypeId: google.maps.MapTypeId.HYBRID
+			     mapTypeId: google.maps.MapTypeId.HYBRID,
+				 disableDoubleClickZoom: true
 			 }
 			 
         var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
